@@ -1,0 +1,306 @@
+
+
+
+修改表
+	添加列  : 
+		later table 表名 add  列名 类型
+	修改列类型:
+		alter table 表名 modify 列名 类型
+	修改列名和类型:
+		alter table 表名 change column 旧列名 新列名 类型
+	
+	删除列:
+		alter  table 表名 drop column 列名
+	修改表名:
+		rename table 旧表名 to 新表名
+
+
+
+	DML
+		增 insert
+		 insert into t_test (id ,name)values(2,'aab');
+		删 delete
+		改 update
+		查
+
+
+
+-------------------------------------------------------
+
+create table t_dept(
+	id int primary key auto_increment,
+	name varchar(10)
+);
+
+create table t_emp(
+	id int primary key auto_increment,
+	name varchar(10),
+	salary double,
+	dept_id int references t_dept(id),
+	manager_id int references t_emp(id)
+);
+
+
+
+
+
+
+insert into t_dept values (1,'d1');
+insert into t_dept values (2,'d2');
+insert into t_dept values (3,'d3');
+
+
+insert into t_emp values (2,'e2',4500,1,1);
+insert into t_emp values (3,'e3',4500,2,1);
+insert into t_emp values (4,'e4',4000,1,2);
+insert into t_emp values (5,'e5',3900,1,2);
+insert into t_emp values (6,'e6',3850,1,2);
+insert into t_emp values (7,'e7',3800,2,2);
+insert into t_emp values (8,'e8',3500,2,7);
+insert into t_emp values (9,'e9',3500,2,7);
+
+
+		select * from 表
+
+查找员工姓名,部门名  老板
+
+  select name,ifnull(dept_id,'BOSS')
+  from t_emp;
+
+ 起别名
+
+ select name,ifnull(dept_id,'BOSS') dept_id
+  from t_emp;
+
+  select name,ifnull(dept_id,'BOSS') "dept id"  //含有空格用双引号"  "
+  from t_emp;
+
+排重
+  员工分布在哪些部门,部门id
+
+  SELECT DISTINCT dept_id
+  from t_emp;
+
+
+  分页
+ 
+ 前3条数据
+    select *
+    from t_emp
+    limit 3;
+
+从下标为3 开始5条
+    select *
+    from t_emp 
+    limit 3,5;
+
+找员工表中第二 pageno页数据,一页最多显示5 maxsize条
+ select *
+ from t_emp
+ limit (pageNo-1)*maxSize,maxSize ;
+
+选择操作
+    2号部门有哪些员工 ,name  ,id
+
+    select name,dept_id 
+    from t_emp
+    where dept_id=2;
+工资大于4000员工,姓名 年薪
+  select name,salary*12
+  from t_emp
+   where salary>4000;
+
+   找出工资在3000到3500之间员工 ,姓名
+   
+select name
+     from t_emp
+    where salary between 3000 and 3500;
+
+    select name
+     from t_emp
+     where salary  >=3000 and salary <=3500;
+
+
+     找最高领导,及年薪
+      select name,salary
+    -> from t_emp
+    -> where manager_id is null;
+
+
+    找出1,2部门员工,姓名
+
+    select name
+    -> from t_emp
+    -> where dept_id=1 or dept_id=2;
+
+
+     select name
+    -> from t_emp
+     where dept_id in (1,2);
+
+    处了2,3号部门所有员工,所有信息
+     select *
+     from t_emp
+    where dept_id not in(2,3)
+    or dept_id is null;
+
+
+
+
+    select *from t_emp
+    -> where dept_id <>2
+    -> and dept_id<>3
+    -> or dept_id is null;
+
+
+
+    找出以E开头的员工
+    select *from t_emp
+    where name like 'E%';
+
+    找出以E_开头的员工
+    select *from t_emp
+    where name like 'E\_%';
+
+找出2号部门年薪高于4200的员工,姓名,工资
+
+select name,salary
+from t_emp
+where salary>4200/12;
+
+排序
+  所有员工按工资降序显示 
+  select *from t_emp 
+  order by salary desc;
+
+
+  2号部门员工按工资降序显示 
+  select *from t_emp 
+  where dept_id=2
+  order by salary desc
+  ;
+
+
+所有员工信息,部门升序,部门内按工资降序
+ select *
+ from t_emp
+ order by dept_id,salary desc;
+
+多表查询
+  笛卡尔集
+  select *
+  from 表1 ,表2
+找出最高领导之外的姓名和部门名
+
+
+内连接
+ select e.name,d.name
+     from t_emp e
+    inner join t_dept d
+    on e.dept_id=d.id;
+
+    外链接
+         外连接=内连接+没有匹配的记录
+
+找出所有员工姓名,部门
+
+select e.name,d.name
+    from t_emp e
+    left outer join t_dept d
+    on e.dept_id=d.id;
+
+   select e.name,d.name
+     from t_emp e
+     left join t_dept d
+     on e.dept_id=d.id;
+哪些部门没有员工,部门名
+
+   select d.name
+         from t_emp e
+     right join t_dept d
+     on e.dept_id=d.id
+     where e.id is null;
+
+
+ 自连接
+     查询所有员工姓名和领导名,没有领导的显示boos
+
+
+      select e.name,m.name
+     from t_emp e
+    left join t_emp m
+    on e.manager_id=m.id;
+
+select e.name,ifnull(m.name,'BOSS') manager_id
+     from t_emp e
+    left join t_emp m
+    on e.manager_id=m.id;
+
+
+哪些人是领导,姓名
+select distinct m.name
+from t_emp e
+join t_emp m
+   on e.manager_id =m.id;
+
+那些人不是领导,姓名
+select  m.name
+from t_emp e
+right join t_emp m
+   on e.manager_id =m.id
+   where e.id is null;
+
+2号部门的平均工资,平均工资
+
+select avg(salary)
+from t_emp
+where dept_id=2;
+
+2号部门平均工资,部门号,工资
+
+select max(dept_id),avg(salary)
+from t_emp
+where dept_id=2;
+
+各个部门的平均工资,部门号,平均工资
+
+select dept_id,avg(salary)
+from t_emp
+group by dept_id;
+
+列出平均工资大于4000的部门,部门号和平均工资
+
+ select dept_id,avg(salary)
+    from t_emp
+    group by dept_id
+    having avg(salary)>4000;
+
+
+子查询
+   非关联子查询
+
+	谁的工资最低,姓名,工资
+
+	select name ,salary
+	from t_emp
+	where salary =(select min(salary)
+				from  t_emp);
+
+
+	谁和e4在同一个部门
+	
+	select name
+	from t_emp
+	where dept_id=(select dept_id
+			from t_emp
+			where name='e4')
+		and name<>'e4';
+
+谁是领导
+select name
+from t_emp
+where dept_id=(select manager
+		from t_emp);
+
+谁不是领导
+    关联子查询	
