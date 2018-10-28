@@ -304,3 +304,153 @@ where dept_id=(select manager
 
 谁不是领导
     关联子查询	
+
+
+
+
+
+
+
+
+
+
+
+
+
+JDBC
+注册驱动
+	方式一
+		Driver driver=new 具体数据库的驱动类型();
+		DriverManager.registerDriver(driver);
+
+	方式二
+		Class.forName("驱动类的名字");
+
+	方式三
+		java -Djdbc.drivers=驱动类名
+
+
+API
+	java.sql javax.sql
+
+	DriverManager	类
+	Driver		接口
+	Connection	接口		获得操作对象
+	Statement	接口以及子接口	操作对象
+					发送sql语句
+
+
+步骤
+1.注册驱动
+2.获得连接
+3.获得操作对象
+4.发送sql语句
+5.处理结果集
+6.关闭资源
+
+
+DDL操作 execute
+DML操作 exeucteUpdate
+
+
+
+Statement 接口以及子接口
+预编译的操作对象
+	PreparedStatement
+
+	jdbc首先回将sql语句交给数据库编译
+	执行时只是传递参数
+
+	作用
+		提高效率
+		防止sql注入
+
+
+select *
+from t_user
+where username='sdfasdf'
+and password='1' or '1'='1'
+
+
+
+
+
+
+
+
+
+    系统架构
+表示层	ui servlet controller action
+	显示逻辑
+	跟用户做数据交互
+	并调用业务层完成核心业务逻辑
+
+
+业务层	service
+	处理核心的业务逻辑
+	并调用持久层完成持久化操作
+	处理交叉业务逻辑（事务，日志，安全，缓存等）
+
+持久层	dao
+	单一的持久化操作
+
+域层	entity	vo
+	数据的载体
+
+	
+
+
+class AccountVO{
+	int fromAccountId
+	int toAccountId
+	double money
+}
+
+
+转账(AccountVO vo){
+	//根据fromAccountId查询账户信息
+
+	//判断账户是否存在
+
+	//判断余额是否够
+
+	//fromAccount.money-money//更新数据库
+	update()
+
+	//toAccount.money+money//更新数据库
+	update()
+}
+
+select(){
+}
+
+update(){
+	update t_account
+	set money=?
+	where id=?
+}
+
+立项
+需求分析
+概要设计
+详细设计
+开发
+测试
+部署
+维护
+
+
+Emp		Dept
+  Dept d
+
+
+
+
+
+
+
+
+
+
+
+
