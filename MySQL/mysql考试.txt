@@ -1,0 +1,287 @@
+
+A
+（1） 完成一个员工管理系统数据库设计，要求该系统可以保存部门信息和员工信息，部门信息包括部门名称，员工信息包括员工名，工资，设计需要表示出每个员工有所在的部门，以及每个员工有一个直接领导，写出数据库建表的sql语句
+
+
+ create table t_dept(
+    id int primary key auto_increment,
+    name varchar(10)
+);
+credate table t_emp(
+    id int primary key auto_increment,
+    name varchar(10),
+    salary double,
+    dept_id int references t_dept(id),
+    manager_id int references t_emp(id)
+);
+
+二、实训题（20题，每题4分，共80分）
+本题中的数据库操作根据数据库设计题设计的表完成本大题中的sql语句
+
+（1）在mysql中创建一个名为db1的数据库
+create database db1;
+
+（2）查看当前有哪些库
+show databases;
+
+（3）查看当前库中有哪些表
+show tables;
+
+
+（4）查看员工表的表结构
+desc t_emp;
+
+
+（5）往部门表中插入一个部门，部门名称为d1
+ insert into t_dept(name)values('d1');
+
+（6）删除部门名为d1的部门
+delete from t_dept where name=’d1’;
+
+
+（7）修改所有员工工资，所有员工工资增加500元
+update t_emp set salary=salary+500;
+
+
+（8）查询所有员工的姓名和工资
+select name,salary from t_emp;
+
+（9）2号部门有哪些员工，查询员工名和部门号
+、select name,dept_id from t_emp where dept_id=2;
+
+
+（10）找出工资在3000到3500之间的员工，查询员工名和工资
+select name,salary from t_emp where salary between 3000 and 3500;
+
+（11）找出姓名以e开头的员工，查询所有信息
+select * from t_emp where name like 'e%';
+
+
+（12）找出所有员工的信息，查询员工名和部门名
+select e.name,d.name from t_emp e   left outer join   t_dept d on  e.dept_id=d.id;
+
+
+（13）哪些部门没有员工，查询部门名
+select d.name from t_emp e right join t_dept d   on e.dept_id=d.id   where e.id is null;
+（14）哪些部门有员工，查询部门名
+select distinct d.name from t_emp e join t_dept d    on e.dept_id=d.id;
+
+（15）各个部门的平均工资，查询部门号和平均工资
+select dept_id,avg(salary) from t_emp group by dept_id;
+
+（16）列出平均工资大于4000的部门，部门号和平均工资
+select dept_id,avg(salary) from t_emp  group by dept_id   having avg(salary)>4000;
+
+
+（17）哪些部门的平均工资比d2部门的平均工资高，按平均工资降序查询部门号和平均工资
+select dept_id,avg(salary) from t_emp   
+group by dept_id  having avg(salary)> (select avg(salary) from t_emp e  join  t_dept d on e.dept_id=d.id
+  where d.name='d2') 
+order by avg(salary) desc;
+
+
+（18）哪些人的工资等于本部门的平均工资，查询姓名和工资和部门id
+select name,salary,dept_id from t_emp where (ifnull(dept_id,0),salary) in (select ifnull(dept_id,0),avg(salary) from t_emp group by dept_id);  
+
+（19）查出公司的所有部门，查询部门的所有信息和每一个部门有几个员工
+select d.id,d.name, (select count(1) from t_emp e where e.dept_id=d.id) from t_dept d;
+
+（20）查询所有员工，做分页查询，一页最多显示5条记录，查询第2页员工的姓名
+select name from t_emp limit 5,5;
+
+三、编程题（1题，每题10分，共10分）
+（1）使用jdbc往部门表中插入一条记录，部门名为d1
+String driver = "com.mysql.jdbc.Driver";
+		String url = "jdbc:mysql://127.0.0.1:3306/jdbc?useUnicode=true&characterEncoding=utf8";
+		String username = "root";
+		String password = "";
+		Connection con=null;
+		PreparedStatement ps=null;
+		String sql=new StringBuffer()
+			.append("insert into t_dept(name) values(?)").toString();
+		try {
+			Class.forName(driver);
+			con=DriverManager.getConnection(url,username,password);
+			ps=con.prepareStatement(sql);
+			ps.setString(1, "d1");
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(ps!=null){
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(con!=null){
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+
+
+B
+（1） 完成一个员工管理系统数据库设计，要求该系统可以保存部门信息和员工信息，部门信息包括部门名称，员工信息包括员工名，工资，设计需要表示出每个员工有所在的部门，以及每个员工有一个直接领导，写出数据库建表的sql语句
+  Create table t_dept(
+Id int primary key auto_increment,
+Name varchar(10)
+);
+Create table t_emp(
+id int primary key auto_increment,
+Name varchar(10)
+Salary double,
+dept_id  int references t_dept(id),
+Manager_id int references t_emp(id)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+二、实训题（20题，每题4分，共80分）
+本题中的数据库操作根据数据库设计题设计的表完成本大题中的sql语句
+（21）在mysql中创建一个数据库名字为database1
+create database database1;
+
+
+（22）使用database1这个库
+use database1;
+
+
+（23）查看当库有哪些表
+show tables
+
+
+（24）查看部门表的表结构
+desc t_dept;
+
+
+（25）往员工表中插入一个员工，员工名称为e1，工资为5000元
+insert into t_emp (name,salary) values (’e1’,5000);
+
+
+（26）删除员工名为e1的员工
+update t_emp set salary=6000 where id=1;
+
+
+（27）修改id为1的员工工资为6000元
+update t_emp set salary=6000 where id=1;
+
+（28）查询所有部门，查询部门名
+select name from t_dept;
+
+
+（29）1号部门有哪些员工，查询员工名和部门号
+select name,dept_id from t_emp where dept_id=1;
+
+
+（30）找出1号和2号部门的员工，查询员工名和部门号
+select name from t_emp where dept_id in (1,2);
+
+
+（31）找出姓名以e_开头的员工，查询所有信息
+select * from t_emp where name like ‘e\_%’ 
+
+（32）找出所有有员工的部门的信息，查询员工名和部门名
+
+select e.name,d.name from t_emp e inner join t_dept d on e.dept_id=d.id;
+
+（33）哪些人是领导，查询姓名
+、select distinct m.name from t_emp e join t_emp m on e.manager_id=m.id
+
+
+（34）哪些人不是领导，查询姓名
+select m.name from t_emp e right join t_emp m on e.manager_id=m.id where e.id is null
+
+
+（35）2号部门的平均工资，查询部门号和平均工资
+select dept_id,avg(salary) from t_emp where dept_id=2 group by dept_id;
+
+
+（36）列出平均工资大于4000的部门，查询部门号和平均工资
+select dept_id,avg(salary) from t_emp group by dept_id having avg(salary)>4000;
+
+（37）找出谁的工资最低，查询姓名和工资
+select name,salary from t_emp where salary=(select min(salary) from t_emp);
+
+
+（38）哪些人的工资等于本部门的平均工资，查询姓名和工资和部门号
+select name,salary,dept_id from t_emp where (ifnull(dept_id,0),salary) in (select ifnull(dept_id,0),avg(salary) from t_emp group by dept_id); 
+
+（39）哪些人的工资比本部门的平均工资高，查询姓名和工资和部门号
+select name,salary,dept_id from t_emp o where salary>(select avg(salary) from t_emp i where i.dept_id=o.dept_id);
+
+
+（40）查询所有部门，做分页查询，一页最多显示3条记录，查询第3页部门的部门名称
+select name from t_dept limit 6,3;
+
+
+本题分数	
+得   分	
+
+
+
+
+
+三、编程题（1题，每题10分，共10分）
+（1）使用jdbc往将部门表中的所有信息打印到控制台
+String driver = “com.mysql.jdbc.Driver”;
+ 	String url = “jdbc:mysql://127.0.0.1:3306/   jdbc?useunicode=ture&characterEnconding=utf8”;
+String username = “root”;
+String password = “”;
+preparedStatement ps=null;
+ResultSet rs=null;
+String sql=new stringbuffer()
+ 		.append(“select * from t_dept ”).tostring();
+Try{
+Class.forname(driver);
+Con =drivermanager.getcounnection(url,username,password);
+Ps=con.preparstatement(sql);
+Rs=ps.executeQuery();
+
+While(rs.next()){
+System.out.println(rs.getlnt(1)+”\t”+rs.getstring(2));
+}
+}catch(exception e ){
+e.printstacktrace();
+} finally {
+			if(rs!=null){
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(ps!=null){
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(con!=null){
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+ 
+
